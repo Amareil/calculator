@@ -6,37 +6,53 @@ const equal = document.querySelector(".equal");
 
 let inputNumber = [],
     inputOperator = [],
-    val = "",
-    index = 0;
+    val = ""
+    ;
 
 number.addEventListener("click", (e) => {
     if (!e.target.className) {
         let inputValue = e.target.textContent;
         val = val + inputValue;
 
-        console.log(`f: ${val}`);
+        console.table(val);
+
     }
 });
 
 operator.addEventListener("click", (e) => {
     if (!e.target.className) {
-        console.log(e.target)
+
         inputNumber.push(val);
         inputOperator.push(e.target.textContent);
-        console.log(`array: ${inputNumber[index]} ${inputOperator[index]}`);
-
-        index++;
+        val = "";
+        console.table(inputOperator);
     }
 });
 
-equal.addEventListener("click", (e) => { });
+equal.addEventListener("click", (e) => {
 
-function add(a, b) { }
+    inputNumber.push(val);
+    console.table(inputNumber);
 
-function subtract(a, b) { }
+    if(inputNumber.length > inputOperator.length){
+        console.log('correct');
+    }
 
-function multiply(a, b) { }
 
-function divide(a, b) { }
+    const calculateOutput ={
+        '+': function (x,y){return x+y},
+        '-': function (x,y){return x-y},
+        '*': function (x,y){return x*y},
+        '/': function (x,y){return x/y}
+    }
+    
 
-function operate(a, b) { }
+    const calc = inputNumber.reduce((firstVal, secondVal)=>{
+        console.log('1: '+ parseInt(firstVal));
+        console.log('2: '+secondVal);
+        return calculateOutput[inputOperator](parseInt(firstVal),parseInt(secondVal));
+    })
+    console.log(calc);
+
+});
+
