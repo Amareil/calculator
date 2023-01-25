@@ -75,7 +75,7 @@ function getOperatorPosition() {
   const div = inputOperatorArray.findIndex((inputOperator) => inputOperator === "/");
   const mult = inputOperatorArray.findIndex((inputOperator) => inputOperator === "*");
   const add = inputOperatorArray.findIndex((inputOperator) => inputOperator === "+" );
-  const sub = inputOperatorArray.findInd
+  const sub = inputOperatorArray.findIndex((inputOperator) => inputOperator === "-" );
   console.log(`${div} ${mult} ${add} ${sub}`);
 
   if (div < mult) {
