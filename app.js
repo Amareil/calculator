@@ -40,6 +40,19 @@ equal.addEventListener("click", (e) => {
     console.log("correct");
   }
 
+  getOperatorPosition();
+  console.table(operatorArray);
+  // console.table(inputNumberArray);
+  console.table(inputOperatorArray);
+  calculateEquation()
+  // console.table(operatorArray);
+  // console.table(inputNumberArray);
+  console.table(inputOperatorArray);
+
+});
+
+function calculateEquation(){
+
   const calc = {
     "+": (x, y) => x + y ,
     "-": (x, y) => x - y,
@@ -47,24 +60,30 @@ equal.addEventListener("click", (e) => {
     "/": (x, y) => x / y,
   };
 
-  getOperatorPosition();
-  console.table(operatorArray);
-  console.table(inputNumberArray);
-  console.table(inputOperatorArray);
+  for(let i=0; i<operatorArray.length; i++)
+  {
+    //if include
+    while(inputOperatorArray.includes(operatorArray[i].operator))
+    {
+    // console.log('Input Operator:'+ inputOperatorArray + ',-> ' + operatorArray[i].operator);
+    //hanapin sa array ung operator
+    operatorIndex = inputOperatorArray.indexOf(operatorArray[i].operator);
+    // console.log('Operator Index:'+ operatorIndex);
 
-  //push item inside base kung ano position
-  //add ung index sa div
+    firstNumber = parseInt(inputNumberArray[operatorIndex]);
+    secondNumber = parseInt(inputNumberArray [operatorIndex+1]);
+    // console.log(firstNumber + ","+ secondNumber);
+    let result = calc[operatorArray[i].operator](firstNumber,secondNumber);
 
-  let index = 0;
-  for (let i = 0; i < inputNumberArray.length; i++) {
-    index = i + (i + 1);
+    // console.log(result);
+    // console.table(inputNumberArray);
 
-    console.log(calc["+"](2,2));
+    inputNumberArray.splice(operatorIndex, 1);
+    inputNumberArray[operatorIndex] = parseInt(result);
+    inputOperatorArray.splice(operatorIndex, 1);
 
-  }
-});
-
-function calculateEquation(){
+    }
+  };
 
 }
 
@@ -75,34 +94,38 @@ function getOperatorPosition() {
   const mult = inputOperatorArray.findIndex((inputOperator) => inputOperator === "*");
   const add = inputOperatorArray.findIndex((inputOperator) => inputOperator === "+" );
   const sub = inputOperatorArray.findIndex((inputOperator) => inputOperator === "-" );
-  // console.log(`${div} ${mult} ${add} ${sub}`);
 
-  //map the input position. add 1 so no position will be 0
-  operatorArray.forEach(e => e.operator === "/" ? e.position = div+1
-    : e.operator === "*" ? e.position = mult+1 
-    : e.operator === "+" ? e.position = add+1
-    : e.operator === "-"? e.position = sub+1 
+  //map the input position
+  operatorArray.forEach(e => e.operator === "/" ? e.position = div
+    : e.operator === "*" ? e.position = mult
+    : e.operator === "+" ? e.position = add
+    : e.operator === "-"? e.position = sub 
     : 5
     );
+    console.table(operatorArray);
 
     //set position which came first: division or multiplication
-    if(operatorArray[0].position === 1){ //set division as first position if index = 1 
-      operatorArray[0].position = 1;
-      operatorArray[1].position = 2;
+    if(operatorArray[0].position === 0){ //set division as first position if index = 0
+      operatorArray[0].position = 0;
+      operatorArray[1].position = 1;
     }else
     {
-      operatorArray[0].position = 2;
-      operatorArray[1].position = 1;
+      operatorArray[0].position = 1;
+      operatorArray[1].position = 0;
     }
  
     //set position which came first: sum or subtraction
-    if(operatorArray[2].position === 3 || operatorArray[2].position === 1){//set sum as first position if index = 1 OR 3
-      operatorArray[2].position = 3;
-      operatorArray[3].position = 4;
+    if(operatorArray[3].position < 0 
+    || (operatorArray[2].position === 0 && (operatorArray[2].position < operatorArray[3].position)) 
+    || ((operatorArray[2].position === 1 && (operatorArray[2].position < operatorArray[3].position))
+    || (operatorArray[2].position > 0 && (operatorArray[2].position < operatorArray[3].position))
+    )){
+      operatorArray[2].position = 2;
+      operatorArray[3].position = 3;
     }else
     {
-      operatorArray[2].position = 4;
-      operatorArray[3].position = 3;
+      operatorArray[2].position = 3;
+      operatorArray[3].position = 2;
     }
 
     // sort positions
