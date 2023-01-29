@@ -1,38 +1,101 @@
-const number = document.querySelector(".input-number-wrapper");
-const operators = document.querySelector(".operator-wrapper");
-const screenNumber = document.querySelector(".screen-number");
-const clear = document.querySelector(".clear");
-const equal = document.querySelector(".equal");
+const number = document.querySelectorAll(".number-btn");
+const operators = document.querySelectorAll(".operator-btn");
+const display = document.querySelector(".display");
+const input = document.querySelector(".input");
+const result = document.querySelector(".result");
+const clear = document.querySelector(".clear-btn");
+const equal = document.querySelector(".equal-btn");
+const delete_ = document.querySelector(".del-btn");
 
 let inputNumberArray = [],
   inputOperatorArray = [],
   operatorArray = [
-    { operator: "/", position: 0 },
-    { operator: "*", position: 0 },
+    { operator: "÷", position: 0 },
+    { operator: "x", position: 0 },
     { operator: "+", position: 0 },
     { operator: "-", position: 0 },
   ],
-  inputNumber = "";
+  inputNumber = "",
+  combineString = "",
+  pastEquation = ""
+  resultEquation = 0;
+  ;
 
-number.addEventListener("click", (e) => {
-  if (!e.target.className) {
-    let inputValue = e.target.textContent;
-    inputNumber = inputNumber + inputValue;
+clear.addEventListener("click", e => {
+
+  clearVariables();
+  displayText(combineString, input);
+  displayText(pastEquation, result);
+})
+
+delete_.addEventListener("click", e=>{
+
+  const lastWord = getLastString();
+
+  if(operatorArray.some(item => item.operator === lastWord)){
+
+   //remove last operator
+    inputOperatorArray.pop();
+    combineString = combineString.substring(0, combineString.lastIndexOf("")-3);
   }
-});
+  else{
+    //remove last number
+    combineString = combineString.substring(0, combineString.lastIndexOf("")-1);
+  }
 
-operators.addEventListener("click", (e) => {
-  if (!e.target.className) {
+  //update display
+  displayText(combineString, input);
+
+})
+
+number.forEach(e=>{
+  e.addEventListener("click", (e) => {
+      let inputValue = e.target.textContent;
+      inputNumber = inputNumber + inputValue;
+  
+      combineString += inputValue;
+      displayText(combineString, input);
+  });
+})
+
+operators.forEach(e=>{
+  e.addEventListener("click", (e) => {
+
+    //clear variables and reassign result of equation as new input
+    if(pastEquation){
+      
+      let tmp = resultEquation;
+      clearVariables();
+
+      combineString += tmp;
+      inputNumber += tmp;
+      displayText(combineString, input);
+
+    }
+
     addInputValues();
 
-    if(inputNumberArray.length){
-      if(inputOperatorArray.length < inputNumberArray.length){
-        inputOperatorArray.push(e.target.textContent);
-        inputNumber = "";
+    const lastWord = getLastString();
+    console.log("i");
+      //cannot enter operator if number is blank
+      if(inputNumberArray.length)
+      {
+        console.log("hi");
+        //cannot enter operator if last word is another operator
+        if(!operatorArray.some(item => item.operator === lastWord)){
+          console.log("hi2");
+          inputOperatorArray.push(e.target.textContent);
+          inputNumber = "";
+  
+          combineString += ` ${e.target.textContent} `;
+
+          displayText(combineString, input);
+
+        }
       }
-    }
-  }
-});
+  });
+})
+
 
 equal.addEventListener("click", (e) => {
 
@@ -49,12 +112,33 @@ function addInputValues(){
   inputNumberArray.push(inputNumber);
 }
 
+
+function displayText(text,parameter){
+  parameter.textContent = text;
+}
+
+function getLastString(){
+  let combineStringArray = combineString.split("").filter(item => item != " ");
+  return combineStringArray.pop();
+}
+
+function clearVariables(){
+
+  inputNumberArray.length = 0;
+  inputOperatorArray.length = 0;
+  inputNumber = "";
+  combineString ="";
+  pastEquation = "";
+
+}
+
 function calculateEquation() {
+
   const calc = {
     "+": (x, y) => x + y,
     "-": (x, y) => x - y,
-    "*": (x, y) => x * y,
-    "/": (x, y) => x / y,
+    "x": (x, y) => x * y,
+    "÷": (x, y) => x / y,
   };
 
   for (let i = 0; i < operatorArray.length; i++) {
@@ -63,32 +147,37 @@ function calculateEquation() {
       operatorIndex = inputOperatorArray.indexOf(operatorArray[i].operator);
 
       //get input for calculations
-      firstNumber = parseInt(inputNumberArray[operatorIndex]);
-      secondNumber = parseInt(inputNumberArray[operatorIndex + 1]);
+      firstNumber = parseFloat(inputNumberArray[operatorIndex]);
+      secondNumber = parseFloat(inputNumberArray[operatorIndex + 1]);
 
-      let result = calc[operatorArray[i].operator](firstNumber, secondNumber);
+      resultEquation = calc[operatorArray[i].operator](firstNumber, secondNumber);
       
       //remove input in array once done
       inputNumberArray.splice(operatorIndex, 1);
 
       //input result in array to continue computation
-      inputNumberArray[operatorIndex] = result;
+      inputNumberArray[operatorIndex] = resultEquation;
 
       //remove operator in array once done
       inputOperatorArray.splice(operatorIndex, 1);
-      console.log(result);
     }
   }
+
+  combineString += " = ";
+  pastEquation = combineString;
+
+  displayText(combineString, input);
+  displayText(resultEquation, result);
 }
 
 function getOperatorPosition() {
 
   //get input position
   const div = inputOperatorArray.findIndex(
-    (inputOperator) => inputOperator === "/"
+    (inputOperator) => inputOperator === "÷"
   );
   const mult = inputOperatorArray.findIndex(
-    (inputOperator) => inputOperator === "*"
+    (inputOperator) => inputOperator === "x"
   );
   const add = inputOperatorArray.findIndex(
     (inputOperator) => inputOperator === "+"
@@ -99,13 +188,12 @@ function getOperatorPosition() {
 
   //map the input position
   operatorArray.forEach((e) =>
-    e.operator === "/" ? (e.position = div)
-      : e.operator === "*" ? (e.position = mult)
+    e.operator === "÷" ? (e.position = div)
+      : e.operator === "x" ? (e.position = mult)
       : e.operator === "+" ? (e.position = add)
       : e.operator === "-" ? (e.position = sub)
       : 5
   );
-  console.table(operatorArray);
 
   //set position which came first: division or multiplication
   if (operatorArray[0].position === 0) { //set division as first position if index = 0
