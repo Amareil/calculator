@@ -56,10 +56,17 @@ delete_.addEventListener("click", e=>{
 number.forEach(e=>{
   e.addEventListener("click", (e) => {
       let inputValue = e.target.textContent;
-      inputNumber = inputNumber + inputValue;
+      let displayTxt = input.textContent;
+      let decimalExist = checkInput(inputValue,displayTxt);
+
+      if(!decimalExist)
+      {
+        inputNumber = inputNumber + inputValue;
   
-      combineString += inputValue;
-      displayText(combineString, input);
+        combineString += inputValue;
+        displayText(combineString, input);
+      
+      }
   });
 })
 
@@ -122,6 +129,12 @@ function addInputValues(){
 
 function displayText(text,parameter){
   parameter.textContent = text;
+}
+
+function checkInput(inputValue,displayTxt){
+  if(inputValue === "." && combineString.length <= 0 || displayTxt.includes(".") && inputValue === "."){
+    return true;
+  }
 }
 
 function getLastString(){
