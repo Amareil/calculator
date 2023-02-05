@@ -1,0 +1,97 @@
+:root {
+  --font-size: 2rem;
+  --keys-bg: #23242c;
+  --display-bg: #2b2c36;
+  --operator-bg: #ad7376;
+  --delete-bg: #5f2584;
+  --equal-bg: #759e85;
+  --numbers-bg: #eeeeee;
+  --old-result: #a7a7a7;
+  --border-radius: 5px;
+}
+
+button,
+.input,
+.result {
+  font-size: var(--font-size);
+}
+
+.operator {
+  color: var(--operator-bg);
+}
+
+.equal {
+  color: var(--equal-bg);
+}
+
+.number,
+.clear,
+.del,
+.result {
+  color: var(--numbers-bg);
+}
+
+.clear {
+  background-color: var(--operator-bg);
+}
+.input {
+  color: var(--old-result);
+}
+.del {
+  background-color: var(--delete-bg);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 3rem;
+  
+}
+
+.container {
+  padding: 20px;
+  background-color: var(--keys-bg);
+  border-radius: 5px;
+  border: 2px black solid;
+}
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+button {
+  padding: 20px 30px;
+  background-color: var(--display-bg);
+  border-radius: var(--border-radius);
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.display {
+  padding: 20px 20px;
+  min-height: 10rem;
+  max-height: 10rem;
+  min-width: 40vh;
+  background-color: var(--display-bg);
+  border-radius: var(--border-radius);
+}
+
+.input,.result{
+    word-wrap: break-word;
+    word-break: break-all;
+    max-width: 40vh;
+    text-align: right;
+}
+
+.footer{
+    text-align: center;
+    font-size: 1.5rem;
+    font-family:Arial, Helvetica, sans-serif;
+}
